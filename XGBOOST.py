@@ -7,18 +7,11 @@ import xgboost
 import shap
 from sklearn import metrics
 from numpy import interp
-from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.preprocessing import label_binarize, StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, accuracy_score, recall_score, make_scorer, precision_score, brier_score_loss,roc_curve, roc_auc_score, auc, classification_report, precision_recall_curve, f1_score
-from imblearn import under_sampling, over_sampling, combine
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
-from imblearn.ensemble import BalancedRandomForestClassifier
 from collections import Counter
 from xgboost import XGBClassifier
-from catboost import CatBoostClassifier,Pool # 或者 CatBoostRegressor
-from lightgbm import LGBMClassifier
 from sklearn.model_selection import train_test_split, StratifiedKFold,cross_validate, KFold
 from sklearn.calibration import calibration_curve, CalibratedClassifierCV
 
@@ -58,9 +51,9 @@ scoring = {'report':    make_scorer(classification_report_with_accuracy_score),
 
 
 
-# fit model no training data (365)
-xgb_model =  xgb.XGBClassifier(objective='binary:logistic', colsample_bytree=0.8, learning_rate=0.01,
-                               max_depth=15, alpha=50, n_estimators=600, scale_pos_weight=estimate_train+0.1)
+# fit model no training data 
+xgb_model =  xgb.XGBClassifier(objective='binary:logistic', colsample_bytree=0.5, learning_rate=0.005, 
+                              max_depth=12, n_estimators=900, scale_pos_weight=estimate_train)
 
 kfold = StratifiedKFold(n_splits=5, random_state=None)
 results = cross_validate(xgb_model, X_train, Y_train, cv=kfold,scoring=scoring)
